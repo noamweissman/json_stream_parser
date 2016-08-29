@@ -66,15 +66,15 @@ struct JSON_ParserStruct;
  * 
  * A Key is a string, always sorunded by double quotes while a Value can be onr
  * of the folloings:
- **	 String
- **	 Number
+ **  String
+ **  Number
  **  Object
  **  Array
  **  Special value: true, false or null
 */
 typedef enum
 {
-	eJT_None       = 0,
+  eJT_None       = 0,
   eJT_StartObject   ,
   eJT_EndObject     ,  
   eJT_StartKey      ,
@@ -88,7 +88,7 @@ typedef enum
 
 typedef enum
 {
-	eJSubT_None       = 0,
+  eJSubT_None       = 0,
   eJSubT_KeyString     ,
   eJSubT_ValueString   ,
   eJSubT_Special       ,
@@ -103,9 +103,9 @@ typedef enum
 
 typedef enum
 {
-	eProcData_Done     = 0,
-	eProcData_Fragment    ,
-	eProcData_Error         
+  eProcData_Done     = 0,
+  eProcData_Fragment    ,
+  eProcData_Error         
 
 } ProccessDataStat_t;
 
