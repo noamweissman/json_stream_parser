@@ -77,18 +77,18 @@ static ProccessDataStat_t JSON_GetString(JSON_Parser_t *Parser, const char *File
     // save unicode data !
     if(Parser->UnicodeSaved != JSON_EMPTY)
     {
-			if(Parser->UnicodeSaved < 4)
+      if(Parser->UnicodeSaved < 4)
       {
-				// If it isn't a hex character we have an error 
-				if( !(
+        // If it isn't a hex character we have an error 
+        if( !(
               ((Ch >= 48) && (Ch <= 57))    ||  // 0-9
-							((Ch >= 65) && (Ch <= 70))    ||  // A-F
-							((Ch >= 97) && (Ch <= 102))       // a-f
+              ((Ch >= 65) && (Ch <= 70))    ||  // A-F
+              ((Ch >= 97) && (Ch <= 102))       // a-f
              )
           )
         {
-					Stat = eProcData_Error;
-					goto EXIT_STRING_PARSE;
+          Stat = eProcData_Error;
+          goto EXIT_STRING_PARSE;
         }
         else
         {
@@ -105,8 +105,8 @@ static ProccessDataStat_t JSON_GetString(JSON_Parser_t *Parser, const char *File
     }      
     
     
-		// Quote: end of string
-		if(Ch == '\"')
+    // Quote: end of string
+    if(Ch == '\"')
     {
       // terminate the key value string
       Parser->Data[Parser->DataSize] = '\0';
@@ -117,35 +117,35 @@ static ProccessDataStat_t JSON_GetString(JSON_Parser_t *Parser, const char *File
     }
     else if((Ch == '\\') && (Parser->DataSize + 1 < DataLen))
     {      
-		  // Backslash: Quoted symbol expected, check if we have the hole string ?
-	  	switch(Ch)
+      // Backslash: Quoted symbol expected, check if we have the hole string ?
+      switch(Ch)
       {
-  	  	// Allowed escaped symbols
-			  case '\"': 
+        // Allowed escaped symbols
+        case '\"': 
         case '/' : 
         case '\\': 
         case 'b' :
-			  case 'f' : 
+        case 'f' : 
         case 'r' : 
         case 'n' : 
         case 't' :
           // ????
           Parser->Data[Parser->DataSize++] = Ch;
           DataCopy++;
-				break;
+        break;
           
-			  // Allows escaped symbol \uXXXX
-			  case 'u':
+        // Allows escaped symbol \uXXXX
+        case 'u':
           // save the u + the \ that was prevoiusly saved
           Parser->Data[Parser->DataSize++] = Ch;
           DataCopy++;
           Parser->UnicodeSaved = 0;
-				break;
-        				
-				default:
-					Stat = eProcData_Error;
         break;
-			}
+        
+        default:
+          Stat = eProcData_Error;
+        break;
+      }
     }
     else
     {
@@ -159,7 +159,7 @@ static ProccessDataStat_t JSON_GetString(JSON_Parser_t *Parser, const char *File
     {
       goto EXIT_STRING_PARSE;
     }
-	}
+  }
 
   
   // if we did not find the '"' it means we have fragmented data
@@ -191,16 +191,16 @@ EXIT_STRING_PARSE:
 */
 int JSON_ParseBuffer(JSON_Parser_t *Parser, const char *FileData, int DataLen)
 {
-	int DataPos;
-	char Ch;
+  int DataPos;
+  char Ch;
   JSON_ParserStackItem_t *pStack;
   ProccessDataStat_t ProccessDataStat;
   
   
-	for(DataPos=0; ((DataPos < DataLen) && (FileData[DataPos] != '\0')); DataPos++)
+  for(DataPos=0; ((DataPos < DataLen) && (FileData[DataPos] != '\0')); DataPos++)
   {
     // read char from buffer and decide what we got ?
-		Ch = FileData[DataPos];
+    Ch = FileData[DataPos];
     Parser->Count++;
     
     // use a helper pointer
@@ -260,9 +260,9 @@ int JSON_ParseBuffer(JSON_Parser_t *Parser, const char *FileData, int DataLen)
       
       
       // evaluate the character just read. It is either a value or a new object
-    	switch(Ch)
+      switch(Ch)
       {
-    		case '{':
+        case '{':
           if(pStack->Type == eJT_None)
           {
             pStack->Type = eJT_StartObject;
@@ -319,11 +319,11 @@ int JSON_ParseBuffer(JSON_Parser_t *Parser, const char *FileData, int DataLen)
             // array brace
             Parser->Data[Parser->DataSize++] = '[';
           }
-     		break;
+        break;
     
         //---------------------------------------------------------------------------
     
-    		case '\"': 
+        case '\"': 
           if(pStack->Type == eJT_StartKey)
           {
             pStack->SubType = eJSubT_KeyString;
@@ -332,11 +332,11 @@ int JSON_ParseBuffer(JSON_Parser_t *Parser, const char *FileData, int DataLen)
           {
             pStack->SubType = eJSubT_ValueString;
           }
-	  		break;
+        break;
 
         //---------------------------------------------------------------------------
           
-    		case ':':
+        case ':':
           if(pStack->Type == eJT_EndKey)
           {            
             pStack->Type = eJT_StartValue;
@@ -349,11 +349,11 @@ int JSON_ParseBuffer(JSON_Parser_t *Parser, const char *FileData, int DataLen)
             Parser->Count = JSON_DATA_ERROR;
             goto JSON_PARSE_EXIT;
           }
-    		break;
+        break;
         
         //---------------------------------------------------------------------------              
           
-    		case '}':
+        case '}':
           // if we got '}' after parsing a value it means end of 
           // object and maybe end of JSON
           // if it is a string it was handled above after calling function
@@ -422,11 +422,11 @@ int JSON_ParseBuffer(JSON_Parser_t *Parser, const char *FileData, int DataLen)
             
             pStack->SubType = eJSubT_EndArray;
           }
-    		break;
+        break;
     
         //---------------------------------------------------------------------------
     
-    		case ',':          
+        case ',':          
           if((pStack->Type == eJT_EndValue) || (pStack->Type == eJT_EndObject))
           {
             if((pStack->SubType == eJSubT_Special) || (pStack->SubType == eJSubT_Number))
@@ -449,16 +449,16 @@ int JSON_ParseBuffer(JSON_Parser_t *Parser, const char *FileData, int DataLen)
               goto JSON_PARSE_EXIT;
             }
           }     
-     		break;
+        break;
         
         //---------------------------------------------------------------------------      
           
-    		case '\t': 
+        case '\t': 
         case '\r': 
         case '\n': 
         case ' ' :
           // whith spaces .. do nothing
-    		break;
+        break;
         
         //---------------------------------------------------------------------------      
         
@@ -514,7 +514,7 @@ int JSON_ParseBuffer(JSON_Parser_t *Parser, const char *FileData, int DataLen)
         break;
                   
       } // end switch       
-		} // end else
+    } // end else
   } // end for
 
 JSON_PARSE_EXIT:
@@ -527,6 +527,5 @@ JSON_PARSE_EXIT:
   }
     
   
-	return Parser->Count;
+  return Parser->Count;
 }
-
